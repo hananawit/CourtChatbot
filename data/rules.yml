@@ -1,0 +1,205 @@
+version: "2.0"  # 2.8.0
+
+rules:
+- rule: General Service Path
+  steps:
+  - intent: compliant
+  - action: clarification_form_am
+  - active_loop: clarification_form_am
+
+- rule: Continue to Commenter Type Form
+  condition:
+  - active_loop: clarification_form_am
+  steps:
+  - action: clarification_form_am
+  - active_loop: null
+  - slot_was_set:
+      - requested_slot: null
+  - action: check_ref_number_am
+  - slot_was_set:
+      - requested_slot: null
+  - action: action_fetch_court_main_servicce
+
+
+
+- rule: General Service Path
+  steps:
+  - intent: select_option
+  - action: save_court_service_main
+  - action: action_subunit_one
+  - active_loop: action_subunit_one
+
+- rule: action_subunit_one
+  condition:
+  - active_loop: action_subunit_one
+  steps:
+  - action: action_subunit_one
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_listen
+  - action: save_subunit_one
+  # - active_loop: action_subunit_two
+
+
+- rule: General Service Path
+  steps:
+  - intent: select_main
+  - action: save_subunit_two
+  - action: action_subunit_two
+  - active_loop: action_subunit_two
+
+
+- rule: action_subunit_two
+  condition:
+  - active_loop: action_subunit_two
+  steps:
+  - action: action_subunit_two
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_listen
+  - action: save_subunit_two
+  # - action: action_subunit_three
+  # - active_loop: action_subunit_three
+
+
+- rule: General Service Path
+  steps:
+  - intent: select_main2
+  - action: save_subunit_three
+  - action: action_subunit_three
+  - active_loop: action_subunit_three
+
+- rule: action_subunit_one
+  condition:
+  - active_loop: action_subunit_three
+  steps:
+  - action: action_subunit_three
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_listen
+  - action: content_compliant_form
+  - active_loop: content_compliant_form
+    
+- rule: Continue to Commenter Type Form
+  condition:
+  - active_loop: content_compliant_form
+  steps:
+  - action: content_compliant_form
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_new_slot
+
+  
+- rule: form_upload_image
+  steps:
+  - intent: accept
+  - action: form_upload_image
+  - active_loop: form_upload_image
+  
+- rule: deactivating form_upload_image
+  condition:
+  # Condition that form is active.
+  - active_loop: form_upload_image
+  steps:
+  # Form is deactivated
+  - action: form_upload_image
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_upload_image
+  - action: submit_compliant_en
+  - action: action_reset_all_slots
+
+
+
+- rule: starting activating re apply Am
+  steps:
+  - intent: re_apply_compliant_am
+  - action: form_re_apply_compliant_am
+  - active_loop: form_re_apply_compliant_am
+
+- rule: deactivating  re apply En
+  condition:
+  # Condition that form is active.
+  - active_loop: form_re_apply_compliant_am
+  steps:
+  # Form is deactivated
+  - action: form_re_apply_compliant_am
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+
+- rule: starting activating complaint status en
+  steps:
+  - intent: compliant_status
+  - action: form_complaint_status_am
+  - active_loop: form_complaint_status_am
+
+- rule: deactivating  complaint status
+  condition:
+  # Condition that form is active.
+  - active_loop: form_complaint_status_am
+  steps:
+  # Form is deactivated
+  - action: form_complaint_status_am
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  #  - action: utter_additional_slot
+#   - action: action_choose_comment_type
+#   - action: actions_listen 
+
+- rule: AGREED complaint
+  steps:
+  - intent: AGREED
+  - action: action_confirm_complaint
+
+
+- rule: DISAGREED complaint
+  steps:
+  - intent: DISAGREED
+  - action: action_DISAGREED_complaint
+  - active_loop: action_DISAGREED_complaint
+
+
+- rule: DISAGREED complaint
+  condition:
+  # Condition that form is active.
+  - active_loop: action_DISAGREED_complaint
+  steps:
+  # Form is deactivated
+  - action: action_DISAGREED_complaint
+  - slot_was_set:
+    - requested_slot: null
+  # The actions we want to run when the form is submitted.
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+
+
+- rule: starting activating container number
+  steps:
+  - intent: case_status_menu_am
+  - action: form_Case_tracking_am
+  - active_loop: form_Case_tracking_am
+
+- rule: deactivating container number
+  condition:
+  - active_loop: form_Case_tracking_am
+  steps:
+  - action: form_Case_tracking_am
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
